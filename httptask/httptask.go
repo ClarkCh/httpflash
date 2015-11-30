@@ -27,7 +27,7 @@ func HttpTask() {
 
 	client = common.VCLIENT
 	for _ = range common.StartChannel {
-		client = client - 1
+		client -= 1
 		if client == 0 {
 			fmt.Println("\nStart")
 			close(common.StartChannel)
@@ -37,7 +37,7 @@ func HttpTask() {
 
 	client = common.VCLIENT
 	for _ = range common.StopChannel {
-		client = client - 1
+		client -= 1
 		if client == 0 {
 			close(common.StopChannel)
 		}
@@ -151,31 +151,31 @@ func httpDo(click uint64) {
 		resp, err := client.Do(_req)
 		end := time.Now()
 		if err != nil {
-			falseConnect = falseConnect + 1
+			falseConnect += 1
 		} else {
 			resp.Body.Close()
 			statusCode := resp.StatusCode
 			switch {
 			case statusCode <= 399:
-				seccessClick = seccessClick + 1
-				seccessTime = seccessTime + end.Sub(start)
+				seccessClick += 1
+				seccessTime += end.Sub(start)
 			case statusCode >= 400:
-				falseClick = falseClick + 1
-				falseTime = falseTime + end.Sub(start)
+				falseClick += 1
+				falseTime += end.Sub(start)
 			}
 		}
 	}
 
-	common.ResultPool.ClientNumber = common.ResultPool.ClientNumber + 1
-	common.ResultPool.ClickNumber = common.ResultPool.ClickNumber + int64(common.VCLICK)
+	common.ResultPool.ClientNumber += 1
+	common.ResultPool.ClickNumber += int64(common.VCLICK)
 
-	common.ResultPool.SeccessClickNumber = common.ResultPool.SeccessClickNumber + seccessClick
-	common.ResultPool.SeccessTime = common.ResultPool.SeccessTime + seccessTime.Nanoseconds()
+	common.ResultPool.SeccessClickNumber += seccessClick
+	common.ResultPool.SeccessTime += seccessTime.Nanoseconds()
 
-	common.ResultPool.FalseClickNumber = common.ResultPool.FalseClickNumber + falseClick
-	common.ResultPool.FalseTime = common.ResultPool.FalseTime + falseTime.Nanoseconds()
+	common.ResultPool.FalseClickNumber += falseClick
+	common.ResultPool.FalseTime += falseTime.Nanoseconds()
 
-	common.ResultPool.FalseConnect = common.ResultPool.FalseConnect + falseConnect
+	common.ResultPool.FalseConnect += falseConnect
 
 	common.StopChannel <- 1
 }
