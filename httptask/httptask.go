@@ -23,7 +23,6 @@ func HttpTask() {
 	var i uint64
 	for i = 0; i < common.VCLIENT; i++ {
 		go httpDo(common.VCLICK)
-		time.Sleep(time.Millisecond * 50)
 	}
 
 	client = common.VCLIENT
@@ -96,8 +95,6 @@ func checkKeyValue(kvStr string, kvMap map[string]string) {
 }
 
 func httpDo(click uint64) {
-	fmt.Print(".")
-
 	var (
 		seccessClick int64
 		falseClick   int64
@@ -142,7 +139,7 @@ func httpDo(click uint64) {
 
 	
 	common.StartChannel <- 1
-
+	fmt.Print(".")
 	common.StartMutex.RLock()
 	common.StartMutex.RUnlock()
 
@@ -154,7 +151,6 @@ func httpDo(click uint64) {
 		resp, err := client.Do(_req)
 		end := time.Now()
 		if err != nil {
-			//fmt.Println(err)
 			falseConnect = falseConnect + 1
 		} else {
 			resp.Body.Close()
